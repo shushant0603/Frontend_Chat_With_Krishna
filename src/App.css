@@ -7,3 +7,25 @@
 body{
   background-color: #FCEEDC;
 }
+
+/* index.css ya jahan bhi tumhari global CSS hai */
+
+/* Shlok ke liye special color */
+.chat-bubble strong {
+  color: #8B0000; /* Dark Red color for shloka */
+  font-weight: bold;
+  /* Aur bhi styles add kar sakte ho jaise font-family ya background */
+}
+
+/* Agar italic bhi hai to */
+.chat-bubble em {
+    font-style: italic;
+    /* Agar italic text ko bhi alag color dena hai to yahan add kar sakte ho */
+}
+
+/* Agar shlok bold aur italic dono hai (***text***) toh woh <strong><em>text</em></strong> banega */
+.chat-bubble strong em {
+    color: #B8860B; /* Dark Goldenrod color for bold and italic shloka */
+    font-weight: bold;
+    font-style: italic;
+}

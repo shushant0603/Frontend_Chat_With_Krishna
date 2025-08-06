@@ -2,6 +2,9 @@ import React, { useState,useEffect,useRef } from 'react';
 import { useNavigate } from 'react-router-dom'
 import { useContext } from 'react';
 import {ChatContext} from '../context/ChatContext'
+
+import ReactMarkdown from 'react-markdown'; // <-- Yeh naya import
+import remarkGfm from 'remark-gfm';
 const ChatPage = () => {
     const navigate = useNavigate();
   const { messages, setMessages } = useContext(ChatContext);
@@ -58,7 +61,7 @@ const onClick = () => {
           ];
           setMessages(initialKrishnaMessages);
           setIsTyping(false);
-        }, 1500); // 1.5 seconds delay
+        },100); // 1.5 seconds delay
       } else {
         // setMessages(data);
         
@@ -99,7 +102,7 @@ const onClick = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ sender: 'user', text: userMsg.text }),
+        body: JSON.stringify({ sender: 'user', text: userMsg.text,  chatHistory: messages  }),
       });
   
       const data = await response.json();
@@ -181,7 +184,8 @@ const onClick = () => {
 >
   {message.sender === 'user' ? 'You' : 'Krishna'}
 </p>
-        <p>{message.text}</p>
+       {/* Yahan change karo */}
+    <ReactMarkdown remarkPlugins={[remarkGfm]}>{message.text}</ReactMarkdown>
       </div>
       <div ref={messagesEndRef} />
     </div>
