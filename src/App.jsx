@@ -6,12 +6,13 @@ import ChatPage from './components/ChatPage'
 import Home from './pages/home/Home'
 import AudioPlayer from './components/AudioPlayer'
 import { ChatProvider } from './context/ChatContext'
+import { Navigate } from 'react-router-dom'
 
 function App() {
   useEffect(() => {
     const clearMessages = async () => {
       try {
-        await axios.delete("http://localhost:3000/api/messages"); // your API
+        await axios.delete("https://backend-chat-with-krishna.onrender.com/api/messages"); // your API
         console.log("Messages cleared on refresh");
       } catch (err) {
         console.error("Failed to clear messages", err);
@@ -27,7 +28,7 @@ function App() {
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/chat' element={<ChatPage />} />
-        <Route path="*" element={<Navigate to="/" />} /> {/* catch-all */}
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>
     </ChatProvider>
