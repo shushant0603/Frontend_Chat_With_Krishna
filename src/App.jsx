@@ -27,6 +27,7 @@ function App() {
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/chat' element={<ChatPage />} />
+        <Route path="*" element={<Navigate to="/" />} /> {/* catch-all */}
       </Routes>
     </Router>
     </ChatProvider>

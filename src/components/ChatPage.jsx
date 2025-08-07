@@ -42,6 +42,7 @@ const onClick = () => {
   useEffect(() => {
     const fetchMessages = async () => {
       const response = await fetch('https://backend-chat-with-krishna.onrender.com/api/chat');
+      // const response = await fetch("http://localhost:3000/api/chat");
       const data = await response.json();
       setIsTyping(true);
       if (data.length === 0) {
@@ -51,17 +52,17 @@ const onClick = () => {
             {
               id: Date.now(),
               sender: 'krishna',
-              text: 'Bolo Parth, kya dikkat hai?'
+              text: `Bolo Parth, main tumhare rath ka saarthi hu. Kaho, tumhe kahan leke chalna hai?`
             },
             {
               id: Date.now() + 1,
               sender: 'krishna',
-              text: 'Pucho apni man ki baat.'
+              text: `Jo bhi tumhare mann mein hai, woh kaho. Main sunne ke liye taiyaar hu.`
             }
           ];
           setMessages(initialKrishnaMessages);
           setIsTyping(false);
-        },100); // 1.5 seconds delay
+        },2000); // 1.5 seconds delay
       } else {
         // setMessages(data);
         
@@ -97,7 +98,8 @@ const onClick = () => {
     setIsTyping(true); // ✅ Start typing
   
     try {
-      const response = await fetch("https://backend-chat-with-krishna.onrender.com/api/chat", {
+      // const response = await fetch("https://backend-chat-with-krishna.onrender.com/api/chat", {
+        const response = await fetch("http://localhost:3000/api/chat", {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -194,7 +196,7 @@ const onClick = () => {
 {isTyping && (
   <div className="flex justify-start">
     <div className="max-w-xs md:max-w-md p-4 rounded-3xl shadow-sm bg-blue-100 text-gray-700 italic">
-      🕉️ The divine is preparing to speak...
+      🕉️ Typing....
     </div>
   </div>
 )}
