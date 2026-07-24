@@ -17,116 +17,166 @@ const ChatPage = () => {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
+const speak = async (text) => {
 
+  try {
 
-//   const handleSendMessage = (e) => {
-//     e.preventDefault();
-//     if (inputMessage.trim() === '') return;
+    const response = await fetch(
+      "http://127.0.0.1:8000/tts",
+      {
+        method: "POST",
 
-//     const newMessage = {
-//       id: messages.length + 1,
-//       sender: 'user',
-//       text: inputMessage,
-//     };
+        headers: {
+          "Content-Type": "application/json",
+        },
 
-//     setMessages([...messages, newMessage]);
-//     setInputMessage('');
-//     // In a real app, you would send this message to an API
-//   };
+        body: JSON.stringify({
+          text,
+        }),
+      }
+    );
+
+    const blob = await response.blob();
+
+    const url = URL.createObjectURL(blob);
+
+    const audio = new Audio(url);
+
+    audio.play();
+
+    audio.onended = () => {
+      URL.revokeObjectURL(url);
+    };
+
+  } catch (err) {
+
+    console.log(err);
+
+  }
+
+};
   
 const onClick = () => {
   console.log("clicked");
     navigate('/') ;
     
   }
-  useEffect(() => {
-    const fetchMessages = async () => {
-      const response = await fetch('https://backend-chat-with-krishna.onrender.com/api/chat');
-      // const response = await fetch("http://localhost:3000/api/chat");
-      const data = await response.json();
-      setIsTyping(true);
-      if (data.length === 0) {
-        // ⏳ Delay showing initial messages
-        setTimeout(() => {
-          const initialKrishnaMessages = [
-            {
-              id: Date.now(),
-              sender: 'krishna',
-              text: `Bolo Parth, main tumhare rath ka saarthi hu. Kaho, tumhe kahan leke chalna hai?`
-            },
-            {
-              id: Date.now() + 1,
-              sender: 'krishna',
-              text: `Jo bhi tumhare mann mein hai, woh kaho. Main sunne ke liye taiyaar hu.`
-            }
-          ];
-          setMessages(initialKrishnaMessages);
-          setIsTyping(false);
-        },2000); // 1.5 seconds delay
-      } else {
-        // setMessages(data);
-        
-        setIsTyping(false);
+useEffect(() => {
+
+  // Agar pehle se messages hain to greeting mat dikhao
+  if (messages.length > 0) return;
+
+  setIsTyping(true);
+
+  const timer = setTimeout(() => {
+
+    setMessages([
+      {
+        id: 1,
+        sender: "krishna",
+        text: "बोलो पार्थ, मैं तुम्हारे रथ का सारथी हूँ। कहो, तुम्हें कहाँ लेकर चलना है?"
+      },
+      {
+        id: 2,
+        sender: "krishna",
+        text: "जो भी तुम्हारे मन में है, वह कहो। मैं सुनने के लिए तैयार हूँ।"
       }
-    };
-  
-    fetchMessages();
-  }, []);
-  
-  
+    ]);
+
+    setIsTyping(false);
+
+  }, 1500);
+
+  return () => clearTimeout(timer);
+
+}, [messages.length, setMessages]);
 
 
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]); 
-  //send a new message to the backend
+useEffect(() => {
+  scrollToBottom();
+}, [messages]);
+const sendMessage = async (e) => {
 
-  const sendMessage = async (e) => {
-    e.preventDefault();
-  
-    if (!inputMessage.trim()) return;
-  
-    const userMsg = {
-      id: Date.now(),
-      sender: 'user',
-      text: inputMessage,
-    };
-  
-    setMessages((prev) => [...prev, userMsg]);
-    setInputMessage('');
-    setIsTyping(true); // ✅ Start typing
-  
-    try {
-      const response = await fetch("https://backend-chat-with-krishna.onrender.com/api/chat", {
-        // const response = await fetch("http://localhost:3000/api/chat", {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ sender: 'user', text: userMsg.text,  chatHistory: messages  }),
-      });
-  
-      const data = await response.json();
-  
-      const botReply = {
-        id: Date.now() + 1,
-        sender: 'krishna',
-        text: data.botResponse?.text || 'No reply from Krishna.',
-      };
-  
-      setMessages((prev) => [...prev, botReply]);
-    } catch (error) {
-      console.error('Error:', error);
-      setMessages((prev) => [
-        ...prev,
-        { id: Date.now() + 1, sender: 'krishna', text: 'Something went wrong.' }
-      ]);
-    } finally {
-      setIsTyping(false); // ✅ Stop typing
-    }
+  e.preventDefault();
+
+  if (!inputMessage.trim()) return;
+
+  const userMsg = {
+    id: Date.now(),
+    sender: "user",
+    text: inputMessage,
   };
-  
+
+  // User message UI me dikhao
+  setMessages((prev) => [...prev, userMsg]);
+
+  setInputMessage("");
+
+  setIsTyping(true);
+
+  try {
+
+    const response = await fetch("http://127.0.0.1:8000/chat", {
+
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json",
+      },
+
+    body: JSON.stringify({
+  question: userMsg.text,
+  chat_history: [
+    ...messages,
+    userMsg,
+  ].map((msg) => ({
+    role: msg.sender === "user" ? "user" : "assistant",
+    content: msg.text,
+  })),
+}),
+
+    });
+
+    // Agar backend error de
+    if (!response.ok) {
+      throw new Error("Failed to fetch response");
+    }
+
+    const data = await response.json();
+
+    const botReply = {
+      id: Date.now() + 1,
+      sender: "krishna",
+      text: data.answer,
+    };
+     
+    setMessages((prev) => [...prev, botReply]);
+    await speak(botReply.text);
+
+  } catch (err) {
+
+    console.error(err);
+
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: Date.now() + 1,
+        sender: "krishna",
+        text: "⚠️ Something went wrong."
+      }
+    ]);
+
+  } finally {
+
+    setIsTyping(false);
+
+  }
+
+};
+// setMessages((prev) => [...prev, botReply]);
+
+// }
   
 
   return (

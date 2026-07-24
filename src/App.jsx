@@ -12,7 +12,7 @@ function App() {
   useEffect(() => {
     const clearMessages = async () => {
       try {
-        await axios.delete("https://backend-chat-with-krishna.onrender.com/api/messages"); // your API
+        await axios.delete("http://127.0.0.1:8000/chat"); // your API
         console.log("Messages cleared on refresh");
       } catch (err) {
         console.error("Failed to clear messages", err);
