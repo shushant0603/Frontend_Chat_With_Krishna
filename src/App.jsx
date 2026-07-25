@@ -7,12 +7,13 @@ import Home from './pages/home/Home'
 import AudioPlayer from './components/AudioPlayer'
 import { ChatProvider } from './context/ChatContext'
 import { Navigate } from 'react-router-dom'
+import { apiUrl } from './config/api'
 
 function App() {
   useEffect(() => {
     const clearMessages = async () => {
       try {
-        await axios.delete("http://127.0.0.1:8000/chat"); // your API
+        await axios.delete(apiUrl('/chat'));
         console.log("Messages cleared on refresh");
       } catch (err) {
         console.error("Failed to clear messages", err);

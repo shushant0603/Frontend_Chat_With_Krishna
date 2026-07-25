@@ -2,6 +2,7 @@ import React, { useState,useEffect,useRef } from 'react';
 import { useNavigate } from 'react-router-dom'
 import { useContext } from 'react';
 import {ChatContext} from '../context/ChatContext'
+import { apiUrl } from '../config/api';
 
 import ReactMarkdown from 'react-markdown'; // <-- Yeh naya import
 import remarkGfm from 'remark-gfm';
@@ -22,7 +23,7 @@ const speak = async (text) => {
   try {
 
     const response = await fetch(
-      "http://127.0.0.1:8000/tts",
+      apiUrl('/tts'),
       {
         method: "POST",
 
@@ -117,7 +118,7 @@ const sendMessage = async (e) => {
 
   try {
 
-    const response = await fetch("http://127.0.0.1:8000/chat", {
+    const response = await fetch(apiUrl('/chat'), {
 
       method: "POST",
 
