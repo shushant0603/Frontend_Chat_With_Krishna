@@ -28,14 +28,14 @@ const Navbar = () => {
   alt="Chat with Krishna"
   className="navbar-logo w-22 h-22 min-w-30 min-h-30 sm:w-56 sm:h-56"
 />
-<button
-  className="relative flex items-center gap-2 bg-yellow-400 text-gray-800 font-poppins font-semibold px-4 sm:px-6 py-2 sm:py-3 rounded-full shadow-lg hover:bg-yellow-400 hover:translate-y-[-3px] hover:shadow-xl navbar-button text-sm sm:text-base"
- // Move the button upward by 10px
-  onClick={onChatClick}
->
-  <span>Chat</span>
-  <span className="text-lg sm:text-xl">💬</span>
-</button>
+<div className="navbar-button flex gap-2 sm:gap-3">
+  <button className="flex items-center gap-2 bg-white/90 text-gray-800 font-semibold px-3 sm:px-5 py-2 sm:py-3 rounded-full shadow-lg hover:-translate-y-0.5 transition text-sm sm:text-base" onClick={() => navigate('/gita')}>
+    <span>गीता पाठ</span><span aria-hidden="true">📖</span>
+  </button>
+  <button className="flex items-center gap-2 bg-yellow-400 text-gray-800 font-semibold px-3 sm:px-5 py-2 sm:py-3 rounded-full shadow-lg hover:-translate-y-0.5 transition text-sm sm:text-base" onClick={onChatClick}>
+    <span>Chat</span><span aria-hidden="true">💬</span>
+  </button>
+</div>
       </div>
     );
   }
